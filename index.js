@@ -11,12 +11,11 @@ const port = process.env.PORT || 8080;
 
 app.post("/smtp", async (req, res) => {
   const { template, enquiry, message, client, enquiryId } = req.body;
-  console.log(req.body);
 
   const response = await sendMail(template, client, {
     message,
     enquiry,
-    link: `https://app.app.com/ticket/${enquiryId}`,
+    link: `https://scout-dev-3214c.web.app/ticket/${enquiryId}`,
   });
   console.log({ ...response });
   return res.json({ ...response });
