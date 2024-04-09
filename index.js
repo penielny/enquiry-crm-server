@@ -4,13 +4,46 @@ dotenv.config();
 const express = require("express");
 const { sendMail } = require("./smtp");
 const cors = require("cors");
+const { getUsers } = require("./firebase");
 const app = express();
 app.use(cors());
 app.use(express.json());
 const port = process.env.PORT || 8080;
 
 app.post("/smtp", async (req, res) => {
-  const { template, enquiry, message, client, enquiryId } = req.body;
+  const { template, enquiry, message, client, enquiryId, clients, subject } =
+    req.body;
+
+  if (template === "general" || template === "") {
+    // input subject, message, and clients
+    if (!clients.length) {
+      return res
+        .status(400)
+        .json({ message: "Please provide a list of clients." });
+    }
+
+    const customers_ = await getUsers(clients);
+
+    // Process the email sending in the background
+    customers_.forEach((customer) => {
+      // Use a non-await call to handle asynchronously
+      sendMail(
+        template,
+        customer.emailAddress,
+        { message, subject, ...customer },
+        subject,
+      )
+        .then(() => console.log(`Email sent to ${customer.emailAddress}`))
+        .catch((error) =>
+          console.error(
+            `Failed to send email to ${customer.emailAddress}: ${error}`,
+          ),
+        );
+    });
+
+    // Immediately respond to the request
+    return res.status(200).json({ message: "Emails are being sent." });
+  }
 
   const response = await sendMail(template, client, {
     message,
