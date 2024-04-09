@@ -54,6 +54,34 @@ app.post("/smtp", async (req, res) => {
   return res.json({ ...response });
 });
 
+app.post("/sms", async (req, res) => {
+  const { message, clients } = req.body;
+
+  try {
+    if (!clients.length || message === "") {
+      return res
+        .status(400)
+        .json({ message: "Please provide a list of clients and a message" });
+    }
+
+    const customers_ = await getUsers(clients);
+
+    customers_.forEach((customer) => {
+      // Use a non-await call to handle asynchronously
+      sendSms(message, customer.phoneNumber)
+        .then(() => console.log(`SMS sent to ${customer.phoneNumber}`))
+        .catch((error) =>
+          console.error(
+            `Failed to send sms to ${customer.phoneNumber}: ${error}`,
+          ),
+        );
+    });
+
+    // Immediately respond to the request
+    return res.status(200).json({ message: "Sms are being sent." });
+  } catch (err) {}
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
