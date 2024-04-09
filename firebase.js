@@ -30,7 +30,7 @@ async function getUsers(clientIds = []) {
     for (let i = 0; i < clientIds.length; i += batchSize) {
       const batchIds = clientIds.slice(i, i + batchSize);
       const querySnapshot = await db
-        .collection("users")
+        .collection("clients")
         .where(admin.firestore.FieldPath.documentId(), "in", batchIds)
         .get();
       querySnapshot.forEach((doc) => userSnapshots.push(doc));
