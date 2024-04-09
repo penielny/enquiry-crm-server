@@ -5,6 +5,7 @@ const express = require("express");
 const { sendMail } = require("./smtp");
 const cors = require("cors");
 const { getUsers } = require("./firebase");
+const { sendSms } = require("./sms");
 const app = express();
 app.use(cors());
 app.use(express.json());

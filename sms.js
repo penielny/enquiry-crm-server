@@ -3,7 +3,7 @@ const axios = require("axios");
 async function sendSms(message, number) {
   try {
     const response = await axios.get(
-      `https://sms.smsnotifygh.com/smsapi?key=${procces.env.SMS_KEY}&to=${number}&msg=${message}&sender_id=DSGames`,
+      `https://sms.smsnotifygh.com/smsapi?key=${process.env.SMS_KEY}&to=${number}&msg=${message}&sender_id=DSGames`,
     );
 
     return { data: response.data, response: response };
