@@ -40,9 +40,10 @@ async function sendMail(
       subject: subject,
       html: formattedEmail,
     });
-
+    console.log(`mailer:executed`);
     return { sent: true, message: info.response };
   } catch (error) {
+    console.log(`mailer:error`, error);
     return { sent: false, message: error.message };
   }
 }
